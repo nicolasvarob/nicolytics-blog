@@ -1,0 +1,42 @@
+---
+import NavBar from '../../components/NavBar.astro';
+import Layout from '../../layouts/Layout.astro';
+import "../../styles/global.css";
+
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog_posts');
+  return posts.map(post => ({
+    params: { cid:  post.data.content_id, category: post.data.main_category.replaceAll(" ","-").toLowerCase()},
+    props: { post },
+  }));
+
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+---
+
+<Layout>
+<NavBar/>
+  <main class="mb-auto py-8">
+    <div class="post-header text-center	">
+      <time datetime={post.data.published_at}>{  
+        () => {
+          const localDate = new Date(post.data.published_at)
+          const formatedDate = `${localDate.getDate()} de ${localDate.toLocaleString('default', { month: 'long' })}, ${localDate.getFullYear()}`  
+          return formatedDate;
+        }
+        } </time>
+      <h1 class="text-5xl font-bold">
+        {post.data.title}
+      </h1>
+  </div>
+
+<p>{post.data.content_id}</p>
+<p>{post.data.content}</p>
+</main>
+<Content />
+<Layout />
