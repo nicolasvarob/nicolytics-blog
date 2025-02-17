@@ -17,7 +17,9 @@ const orderPost = allBlogPosts.sort((a:any, b:any) => {
     {allBlogPosts.map((item:any)=> (
 
         <li class="pb-12">
-           <a href="/item.data.main_category}/release-of-tailwind-nextjs-starter-blog-v2.0"> 
+           <a href={
+            `/${item.data.main_category.replaceAll(" ","-").toLowerCase()}/${item.data.content_id}`
+           }> 
             <dl>
             <dt class="sr-only">Published on</dt>
           </dl>
