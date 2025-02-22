@@ -1,20 +1,32 @@
 <!doctype html>
 <html lang="en">
-	<link
-	href="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css"
-	rel="stylesheet"
-  />
-	<body class="bg-gray-300">
-		<section class="mx-auto max-w-3xl px-4 sm:px-6 xl:max-w-5xl xl:px-0">
+  <meta name="robots" content="noindex">
 
-			<slot />
-		</section>
-	</body>
-	<script>
-		import Quill from 'quill';
-		const quill = new Quill('#editor', {
-		theme: 'snow'
-	  });  
-	</script>
+  <body class="bg-gray-200">
+    <section >
+      <slot />
+    </section>
+  </body>
+  <script>
+    
+    import PocketBase from 'pocketbase';
+    
+    // Additional JavaScript to handle form submission
+    const pb = new PocketBase("http://127.0.0.1:8090");
+
+    let currentLocation = (window as any).location;
+    let currentPathname = currentLocation.pathname;
+    const authenticatedUser = pb.authStore.isValid;
+
+    console.log("Authstore is valid ?", authenticatedUser)
+    if (!authenticatedUser && currentPathname != "/login") {
+      console.log("Not logged in")
+      currentLocation.replace(window.location.origin + "/login")
+    } else if(authenticatedUser && currentPathname == "/login") {
+      console.log("Logged in")
+      currentLocation.replace(window.location.origin + "/editor/create-post")
+    }
+
+  
+  </script>
 </html>
-

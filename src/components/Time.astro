@@ -1,0 +1,11 @@
+---
+const { date } = Astro.props;
+---
+
+<time datetime={date}>{  
+    () => {
+      const localDate = new Date(date)
+      const formatedDate = `${localDate.getDate()} de ${localDate.toLocaleString('default', { month: 'long' })}, ${localDate.getFullYear()}`  
+      return formatedDate;
+    }
+    } </time>

@@ -1,5 +1,6 @@
 ---
 import NavBar from '../../components/NavBar.astro';
+import Time from '../../components/Time.astro';
 import Layout from '../../layouts/Layout.astro';
 import "../../styles/global.css";
 
@@ -22,21 +23,26 @@ const { Content } = await render(post);
 <Layout>
 <NavBar/>
   <main class="mb-auto py-8">
-    <div class="post-header text-center	">
-      <time datetime={post.data.published_at}>{  
-        () => {
-          const localDate = new Date(post.data.published_at)
-          const formatedDate = `${localDate.getDate()} de ${localDate.toLocaleString('default', { month: 'long' })}, ${localDate.getFullYear()}`  
-          return formatedDate;
-        }
-        } </time>
-      <h1 class="text-5xl font-bold">
+    <div class="text-center pb-20">
+      <div class="text-xl text-blue-700 underline underline-offset-8">{post.data.main_category}</div>
+      <h1 class="text-5xl font-bold py-2">
         {post.data.title}
       </h1>
+      <div class="text-gray-600">
+        <Time date={post.data.published_at} />
+      </div>
   </div>
+<div class="font-sans text-xl font-light text-gray-600">
+  <Fragment set:html= {post.data.content}/>
+</div>
 
-<p>{post.data.content_id}</p>
-<p>{post.data.content}</p>
 </main>
 <Content />
+<script>
+  (window as any).dataLayer.push({
+    event: 'content_viewed',
+    page_name: window.location.pathname ,
+    content_type:'single post'
+    });
+</script>
 <Layout />

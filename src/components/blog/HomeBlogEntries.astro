@@ -4,7 +4,7 @@ import { getCollection } from "astro:content";
 
 const allBlogPosts = await getCollection("blog_posts");
 const orderPost = allBlogPosts.sort((a:any, b:any) => {
-  return new Date(b.data.published_at) - new Date(a.data.published_at);
+  return b.data.published_at - a.data.published_at;
 });
 
 ---

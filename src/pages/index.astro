@@ -11,4 +11,11 @@ import "../styles/global.css";
 <Layout>
 	<NavBar />
 	<HomeBlogEntries />
+	<script>
+		(window as any).dataLayer.push({
+		  event: 'content_viewed',
+		  page_name: window.location.pathname ,
+		  content_type:'home'
+		  });
+	  </script>
 </Layout>

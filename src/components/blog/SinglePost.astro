@@ -16,22 +16,7 @@ const { post } = Astro.props;
 const { Content } = await render(post);
 
 ---
-<main class="mb-auto py-8">
-    <div class="post-header text-center	">
-      <time datetime={post.data.published_at}>{  
-        () => {
-          const localDate = new Date(post.data.published_at)
-          const formatedDate = `${localDate.getDate()} de ${localDate.toLocaleString('default', { month: 'long' })}, ${localDate.getFullYear()}`  
-          return formatedDate;
-        }
-        } </time>
-      <h1 class="text-5xl font-bold">
-        {post.data.title}
-      </h1>
-  </div>
 
-<p>{post.data.content_id}</p>
-<p>{post.data.content}</p>
 <Content />
 
 </main>
