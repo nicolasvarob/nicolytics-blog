@@ -1,22 +1,26 @@
 ---
+import Time from '../../components/Time.astro';
 import "../../styles/global.css";
 
 import { getCollection, render } from "astro:content";
 
-export async function getStaticPaths() {
-  const posts = await getCollection('blog_posts');
-  return posts.map(post => ({
-    params: { cid:  post.data.content_id, category: post.data.main_category.replaceAll(" ","-").toLowerCase()},
-    props: { post },
-  }));
+const { Content,post } = Astro.props;
 
-}
-
-const { post } = Astro.props;
-const { Content } = await render(post);
 
 ---
-
-<Content />
+<main class="mb-auto py-8">
+  <div class="text-center pb-20">
+    <div class="text-xl text-blue-700 underline underline-offset-8">{post.data.main_category}</div>
+    <h1 class="text-5xl font-bold py-2">
+      {post.data.title}
+    </h1>
+    <div class="text-gray-600">
+      <Time date={post.data.published_at} />
+    </div>
+</div>
+<div class="font-sans text-xl font-light text-gray-600">
+<Fragment set:html= {post.data.content}/>
+</div>
 
 </main>
+{Content}

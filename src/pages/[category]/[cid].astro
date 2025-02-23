@@ -1,4 +1,5 @@
 ---
+import SinglePost from '../../components/blog/SinglePost.astro';
 import NavBar from '../../components/NavBar.astro';
 import Time from '../../components/Time.astro';
 import Layout from '../../layouts/Layout.astro';
@@ -22,6 +23,7 @@ const { Content } = await render(post);
 
 <Layout>
 <NavBar/>
+
   <main class="mb-auto py-8">
     <div class="text-center pb-20">
       <div class="text-xl text-blue-700 underline underline-offset-8">{post.data.main_category}</div>

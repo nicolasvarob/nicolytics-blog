@@ -1,6 +1,8 @@
 ---
 import { imageMetadata } from "astro/assets/utils";
 import { getCollection } from "astro:content";
+import Time from "../Time.astro";
+import TagList from "./TagList.astro";
 
 const allBlogPosts = await getCollection("blog_posts");
 const orderPost = allBlogPosts.sort((a:any, b:any) => {
@@ -12,6 +14,9 @@ const orderPost = allBlogPosts.sort((a:any, b:any) => {
 
 
 <main class="mb-auto py-8">
+  <div class="pb-12 font-bold">
+    <TagList/>
+  </div>
 
   <ul >
     {allBlogPosts.map((item:any)=> (
@@ -40,13 +45,7 @@ const orderPost = allBlogPosts.sort((a:any, b:any) => {
                 <dd
               class="text-base leading-6  text-gray-400 dark:text-gray-300"
             >
-              <time datetime={item.data.published_at}>{  
-              () => {
-                const localDate = new Date(item.data.published_at)
-                const formatedDate = `${localDate.getDate()} de ${localDate.toLocaleString('default', { month: 'long' })}, ${localDate.getFullYear()}`  
-                return formatedDate;
-              }
-              } </time>
+              <Time date={item.data.published_at} />
             </dd>
               </div>
           </div>
