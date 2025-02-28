@@ -17,13 +17,29 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-
+const { Content } = await render(post);
 
 ---
 
 <Layout>
 <NavBar/>
-<SinglePost postData={post}/> 
+
+  <main class="mb-auto py-8">
+    <div class="text-center pb-20">
+      <div class="text-xl text-blue-700 underline underline-offset-8">{post.data.main_category}</div>
+      <h1 class="text-5xl font-bold py-2">
+        {post.data.title}
+      </h1>
+      <div class="text-gray-600">
+        <Time date={post.data.published_at} />
+      </div>
+  </div>
+<div class="font-sans text-xl font-light text-gray-600">
+  <Fragment set:html= {post.data.content}/>
+</div>
+
+</main>
+<Content />
 <script>
   (window as any).dataLayer.push({
     event: 'content_viewed',

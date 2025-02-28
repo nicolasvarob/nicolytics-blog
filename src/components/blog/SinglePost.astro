@@ -2,10 +2,10 @@
 import Time from '../../components/Time.astro';
 import "../../styles/global.css";
 
-import { getCollection, render } from "astro:content";
 
-const { Content,post } = Astro.props;
 
+const { postData } = Astro.props;
+const post = postData
 
 ---
 <main class="mb-auto py-8">
@@ -23,4 +23,3 @@ const { Content,post } = Astro.props;
 </div>
 
 </main>
-{Content}

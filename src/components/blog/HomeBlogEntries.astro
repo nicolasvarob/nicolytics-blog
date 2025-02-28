@@ -5,9 +5,12 @@ import Time from "../Time.astro";
 import TagList from "./TagList.astro";
 
 const allBlogPosts = await getCollection("blog_posts");
-const orderPost = allBlogPosts.sort((a:any, b:any) => {
-  return b.data.published_at - a.data.published_at;
+const orderedPosts = allBlogPosts.sort((a:any, b:any) => {
+  const b_published_date = new Date(b.data.published_at).getTime()
+  const a_published_date = new Date(a.data.published_at).getTime()
+  return b_published_date - a_published_date;
 });
+
 
 ---
 
@@ -19,7 +22,7 @@ const orderPost = allBlogPosts.sort((a:any, b:any) => {
   </div>
 
   <ul >
-    {allBlogPosts.map((item:any)=> (
+    {orderedPosts.map((item:any)=> (
 
         <li class="pb-12">
            <a href={
