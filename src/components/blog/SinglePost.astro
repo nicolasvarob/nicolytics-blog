@@ -8,6 +8,20 @@ const { postData } = Astro.props;
 const post = postData
 
 ---
+<style is:global>
+
+  main img{
+    padding: 20pt 10pt;
+  }
+
+  main h2 {
+    font-size:  var(--text-3xl);
+    padding:5pt 0;
+    font-weight: 600;
+    color: var(--text-gray-900)
+  }
+
+</style>
 <main class="mb-auto py-8">
   <div class="text-center pb-20">
     <div class="text-xl text-blue-700 underline underline-offset-8">{post.data.main_category}</div>

@@ -2,26 +2,32 @@
 const tags = ["Todos", "BigQuery", "Dataform", "Google Analytics 4"];
 const currentPath = Astro.url.pathname;
 
-console.log(currentPath)
+const { category } = Astro.params;
+
+const categoryToPath = (category: string) => {
+  return "/" + category.replaceAll(" ", "-").toLowerCase();
+};
+
 ---
 
 <div>
   {
     tags.map((item: string) => {
 
-        let buttonClass = "rounded-full border border-transparent py-2 px-4 text-center text-sm transition-all  hover:bg-slate-100 focus:bg-slate-100 active:bg-slate-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+        let buttonClass = "rounded-full border border-transparent py-2 px-4 text-center text-sm transition-all  hover:bg-slate-100 focus:bg-slate-100 active:bg-slate-100"
         if(currentPath=="/" && item=="Todos"){
             buttonClass+=" bg-blue-700 text-slate-200 hover:text-slate-400"
+        } else if (currentPath == categoryToPath(item) ){
+          buttonClass+=" bg-blue-700 text-slate-200 hover:text-slate-400"
         } else {
-            buttonClass+=" text-slate-600"
+          buttonClass+=" text-slate-600"
         }
       return (
-        <button
-          class= {buttonClass}
-          type="button"
-        >
+        <a class= {buttonClass} href={item == "Todos" ? Astro.url.origin : Astro.url.origin + "/" + item.replaceAll(" ","-").toLowerCase()}>
+        
           {item}
-        </button>
+        </a>
+        
       );
     })
   }

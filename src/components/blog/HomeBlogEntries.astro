@@ -5,11 +5,15 @@ import Time from "../Time.astro";
 import TagList from "./TagList.astro";
 
 const allBlogPosts = await getCollection("blog_posts");
-const orderedPosts = allBlogPosts.sort((a:any, b:any) => {
+let resultPosts = allBlogPosts.sort((a:any, b:any) => {
   const b_published_date = new Date(b.data.published_at).getTime()
   const a_published_date = new Date(a.data.published_at).getTime()
   return b_published_date - a_published_date;
 });
+
+const { category } = Astro.params;
+
+if(category) resultPosts = resultPosts.filter((item:any)=> item.data.main_category.replaceAll(" ","-").toLowerCase() === category);
 
 
 ---
@@ -22,7 +26,7 @@ const orderedPosts = allBlogPosts.sort((a:any, b:any) => {
   </div>
 
   <ul >
-    {orderedPosts.map((item:any)=> (
+    {resultPosts.map((item:any)=> (
 
         <li class="pb-12">
            <a href={

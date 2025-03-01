@@ -1,0 +1,30 @@
+---
+import { getCollection } from "astro:content";
+import HomeBlogEntries from "../components/blog/HomeBlogEntries.astro";
+import NavBar from "../components/NavBar.astro";
+import Layout from "../layouts/Layout.astro";
+import "../styles/global.css";
+
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog_posts');
+  return posts.map(post => ({
+    params: { cid:  post.data.content_id, category: post.data.main_category.replaceAll(" ","-").toLowerCase()},
+    props: { post }
+  }));
+
+
+
+}
+---
+<Layout>
+	<NavBar />
+	<HomeBlogEntries />
+	<script>
+		(window as any).dataLayer.push({
+		  event: 'content_viewed',
+		  page_name: window.location.pathname ,
+		  content_type:'category-page'
+		  });
+	  </script>
+</Layout>
