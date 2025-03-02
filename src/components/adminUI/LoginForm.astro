@@ -79,7 +79,7 @@
 
     const email = (document.getElementById("email") as HTMLInputElement).value;
     const password = (document.getElementById("password") as HTMLInputElement).value;
-    const pb = new PocketBase("http://127.0.0.1:8090");
+    const pb = new PocketBase(import.meta.env.PUBLIC_PB_HOST);
 
     await pb
       .collection("users")

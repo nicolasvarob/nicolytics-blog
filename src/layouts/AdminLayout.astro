@@ -1,32 +1,110 @@
+---
+import SideBar from "../components/adminUI/SideBar.astro";
+---
+
 <!doctype html>
 <html lang="en">
-  <meta name="robots" content="noindex">
+  <head>
+    <meta name="robots" content="noindex" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blog Backoffice</title>
+  </head>
 
   <body class="bg-gray-200">
-    <section >
-      <slot />
-    </section>
+    <!-- Main Container -->
+    <div class="min-h-screen bg-gray-100">
+      <!-- Mobile Navigation Toggle Button (Visible only on mobile) -->
+      <div class="lg:hidden">
+        <button id="sidebar-toggle" class="p-4 focus:outline-none">
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Main Content Wrapper -->
+      <div class="flex flex-col lg:flex-row">
+        <SideBar />
+
+        <!-- Main Content -->
+        <main class="flex-1 p-4 lg:p-8">
+          <slot />
+        </main>
+      </div>
+    </div>
+
+    <script>
+      // Toggle sidebar on mobile
+      document
+        .getElementById("sidebar-toggle")!
+        .addEventListener("click", function () {
+          document
+            .getElementById("sidebar")!
+            .classList.remove("-translate-x-full");
+        });
+
+      document
+        .getElementById("close-sidebar")!
+        .addEventListener("click", function () {
+          document
+            .getElementById("sidebar")!
+            .classList.add("-translate-x-full");
+        });
+
+      // Close sidebar when clicking outside on mobile
+      document.addEventListener("click", function (event) {
+        const sidebar = document.getElementById("sidebar");
+        if (!sidebar) return;
+        const sidebarToggle = document.getElementById("sidebar-toggle");
+        if (!sidebarToggle) return;
+
+        if (
+          !sidebar.contains(event.target) &&
+          !sidebarToggle.contains(event.target) &&
+          window.innerWidth < 1024
+        ) {
+          sidebar.classList.add("-translate-x-full");
+        }
+      });
+
+      // Ensure sidebar is visible when screen size changes to desktop
+      window.addEventListener("resize", function () {
+        if (window.innerWidth >= 1024) {
+          document
+            .getElementById("sidebar")!
+            .classList.remove("-translate-x-full");
+        }
+      });
+    </script>
   </body>
   <script>
-    
-    import PocketBase from 'pocketbase';
-    
+    import PocketBase from "pocketbase";
+
     // Additional JavaScript to handle form submission
-    const pb = new PocketBase("http://127.0.0.1:8090");
+    const pb = new PocketBase(import.meta.env.PUBLIC_PB_HOST);
 
     let currentLocation = (window as any).location;
     let currentPathname = currentLocation.pathname;
     const authenticatedUser = pb.authStore.isValid;
 
-    console.log("Authstore is valid ?", authenticatedUser)
+    console.log("Authstore is valid ?", authenticatedUser);
     if (!authenticatedUser && currentPathname != "/login") {
-      console.log("Not logged in")
-      currentLocation.replace(window.location.origin + "/login")
-    } else if(authenticatedUser && currentPathname == "/login") {
-      console.log("Logged in")
-      currentLocation.replace(window.location.origin + "/editor/create-post")
+      console.log("Not logged in");
+      currentLocation.replace(window.location.origin + "/login");
+    } else if (authenticatedUser && currentPathname == "/login") {
+      console.log("Logged in");
+      currentLocation.replace(window.location.origin + "/editor/create-post");
     }
-
-  
   </script>
 </html>

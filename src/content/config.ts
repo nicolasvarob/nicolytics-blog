@@ -1,8 +1,10 @@
 import { z,defineCollection } from "astro:content";
 
+console.log(import.meta.env)
+
 const blog_posts = defineCollection({
     loader: async () => {
-        const response = await fetch("http://127.0.0.1:8090/api/collections/posts/records");
+        const response = await fetch(`${import.meta.env.PUBLIC_PB_HOST}/api/collections/posts/records`);
         const data = await response.json();
         return data.items.map((post:any)=> ({
                 id: post.id,

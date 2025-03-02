@@ -1,0 +1,60 @@
+---
+const response = await fetch(
+  `${import.meta.env.PUBLIC_PB_HOST}/api/collections/posts/records`
+);
+const data = await response.json();
+
+data.items.sort((a:any, b:any) => {
+  const b_published_date = new Date(b.published_at).getTime()
+  const a_published_date = new Date(a.published_at).getTime()
+  return b_published_date - a_published_date;
+});
+
+
+---
+
+<h1>Test</h1>
+<div class="overflow-x-auto">
+  <table class="w-full border-collapse">
+    <thead>
+      <tr class="bg-gray-50">
+        <th
+          class="px-4 py-3 text-left text-sm font-medium text-gray-600 uppercase tracking-wider border-b"
+          >Publicado</th
+        >
+        <th
+          class="px-4 py-3 text-left text-sm font-medium text-gray-600 uppercase tracking-wider border-b"
+          >Título</th
+        >
+        <th
+          class="px-4 py-3 text-left text-sm font-medium text-gray-600 uppercase tracking-wider border-b"
+          >Status</th
+        >
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-200">
+      {        
+        data.items.map((item: any) => {
+        const currentTimestamp = new Date().getTime();
+        const itemTimestamp = new Date(item.published_at).getTime()
+        const addStatusButtonColor = currentTimestamp > itemTimestamp ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800";
+
+        let statusButtonCss = "px-2 py-1 text-xs font-medium rounded-full " + addStatusButtonColor;
+          return (
+            <tr data-post-id={item.id} class="hover:bg-gray-50 transition-colors">
+              <td class="px-4 py-4 text-sm text-gray-900">
+                {new Date(item.published_at).toLocaleDateString()}
+              </td>
+              <td class="px-4 py-4 text-sm text-gray-600">{item.title}</td>
+              <td class="px-4 py-4 text-sm">
+                <span class={statusButtonCss}>
+                  {currentTimestamp > itemTimestamp ? "Published" : "Scheduled"}
+                </span>
+              </td>
+            </tr>
+          );
+        })
+      }
+    </tbody>
+  </table>
+</div>
