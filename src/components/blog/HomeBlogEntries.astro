@@ -2,7 +2,7 @@
 import { imageMetadata } from "astro/assets/utils";
 import { getCollection } from "astro:content";
 import Time from "../Time.astro";
-import TagList from "./TagList.astro";
+import TagList from "./navigation/TagList.astro";
 
 const allBlogPosts = await getCollection("blog_posts");
 let resultPosts = allBlogPosts.sort((a:any, b:any) => {
