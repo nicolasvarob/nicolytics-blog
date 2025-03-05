@@ -1,10 +1,33 @@
 import { defineMiddleware } from "astro:middleware"
 
 const nonAuthenticatedRoutes = ['/login']
-/*
 export const onRequest = defineMiddleware(
-    ({url, locals,redirect}, next) => {
-        const isLoggedIn = false;
- 
+    async ({ url, locals, redirect }, next) => {
+      const isLoggedIn = false;
+  
+      // TODO:
+      locals.isLoggedIn = isLoggedIn;
+      locals.user = null;
+  
+      if (locals.user) {
+        // TODO:
+        // locals.user = {
+        //   avatar: UserActivation.photoURL ?? '',
+        //   email: user.email!,
+        //   name: user.name!,
+        //   emailVerified: user.emailVerified,
+        // };
+      }
+  
+      // TODO: Eventualmente tenemos que controlar el acceso por roles
+      if (!locals.isAdmin && url.pathname.startsWith('/dashboard')) {
+        return redirect('/');
+      }
+  
+      if (isLoggedIn && notAuthenticatedRoutes.includes(url.pathname)) {
+        return redirect('/');
+      }
+  
+      return next();
     }
-);*/
+  );

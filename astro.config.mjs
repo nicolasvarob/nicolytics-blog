@@ -5,7 +5,7 @@ import node from "@astrojs/node";
 import sitemap from "@astrojs/sitemap";
 import Database from "better-sqlite3";
 
-import auth from "auth-astro";
+//import auth from "auth-astro";
 
 const sqliteIntegration = () => ({
   name: "sqlite-integration",
@@ -13,7 +13,7 @@ const sqliteIntegration = () => ({
     "astro:build:start": async () => {
       const db = new Database("src/data/blog.db");
 
-      const query = `
+      const query_create_table__posts = `
         CREATE TABLE IF NOT EXISTS posts (
           id TEXT PRIMARY KEY,
           content_id TEXT,
@@ -28,14 +28,18 @@ const sqliteIntegration = () => ({
         )
         `;
 
-      db.exec(query);
+      db.exec(query_create_table__posts);
 
-      // Run your queries and store results somewhere
-      //const data = db.prepare('SELECT * FROM your_table').all();
+      const query_create_table__users = `
+      CREATE TABLE IF NOT EXISTS users (
+        id TEXT PRIMARY KEY,
+        email TEXT,
+        name TEXT,
+        password TEXT
+      )
+      `;
 
-      // Write to a JSON file that your app can import
-      //const fs = require('fs');
-      //fs.writeFileSync('./src/data/db-content.json', JSON.stringify(data));
+    db.exec(query_create_table__users);
 
       db.close();
     },
@@ -44,7 +48,7 @@ const sqliteIntegration = () => ({
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [sitemap(), sqliteIntegration(), auth()],
+  integrations: [sitemap(), sqliteIntegration()],
   output: "server",
   vite: {
     plugins: [tailwindcss()],
