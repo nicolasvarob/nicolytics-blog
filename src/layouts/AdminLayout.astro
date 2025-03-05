@@ -70,8 +70,8 @@ import SideBar from "../components/adminUI/SideBar.astro";
         if (!sidebarToggle) return;
 
         if (
-          !sidebar.contains(event.target) &&
-          !sidebarToggle.contains(event.target) &&
+          !sidebar.contains(event.target as Node) &&
+          !sidebarToggle.contains(event.target as Node) &&
           window.innerWidth < 1024
         ) {
           sidebar.classList.add("-translate-x-full");

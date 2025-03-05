@@ -1,0 +1,38 @@
+---
+
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Auth</title>
+  </head>
+  <body>
+    <div
+      class="bg-no-repeat bg-cover bg-center relative"
+      style="background-image: url(https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e);"
+    >
+      <div
+        class="absolute bg-gradient-to-b from-green-500 to-green-400 opacity-75 inset-0 z-0"
+      >
+      </div>
+      <div class="min-h-screen sm:flex sm:flex-row mx-0 justify-center">
+        <div
+          class="flex-col flex self-center p-10 sm:max-w-5xl xl:max-w-2xl z-10"
+        >
+          <div class="self-start hidden lg:flex flex-col text-white">
+            <img src="" class="mb-3" />
+            <h1 class="mb-3 font-bold text-5xl">Hola ! </h1>
+            <p class="pr-3">
+              Estamos listos para escribir &#128522;
+            </p>
+          </div>
+        </div>
+        <slot />
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,12 @@
+---
+import { getCollection } from "astro:content"
+
+
+const allBlogPost = await getCollection("db_blog_posts")
+---
+<h2>posts !</h2>
+
+<ul>{allBlogPost.map((i:any)=> (<li>
+    {i.data.id}
+</li>))}
+</ul>

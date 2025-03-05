@@ -7,7 +7,7 @@ import "../styles/global.css";
 
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog_posts');
+  const posts = await getCollection('db_blog_posts');
   return posts.map(post => ({
     params: { cid:  post.data.content_id, category: post.data.main_category.replaceAll(" ","-").toLowerCase()},
     props: { post }
