@@ -1,0 +1,60 @@
+---
+import "../../styles/global.css";
+
+const post_id = Astro.url.searchParams.get("post_id");
+
+
+let renderPostHTML:string;
+if(post_id){
+  const response = await fetch(
+  `${import.meta.env.PUBLIC_PB_HOST}/api/collections/posts/records/${post_id}`
+);
+const data = await response.json();
+if(data.status == 404){
+  renderPostHTML = "<h2> Post no encontrado </h2>";
+} else {
+  renderPostHTML = data.content;
+
+}
+
+} else  {
+  renderPostHTML = "<h2> Escribe tu post </h2>";
+}
+
+
+
+
+---
+
+<style>
+
+</style>
+<div class="">
+  <div class="text-center text-5xl py-10 ">
+    <h1>Crear un nuevo post</h1>
+  </div>
+  <div>
+    <div>
+      <div>
+        <label for="price" class="block text-sm/6 font-medium text-gray-900">Título</label>
+        <div class="mt-2">
+          <div class="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-indigo-600">
+            <div class="shrink-0 text-base text-gray-500 select-none sm:text-sm/6">$</div>
+            <input type="text" name="price" id="price" class="block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6" placeholder="0.00">
+            <div class="grid shrink-0 grid-cols-1 focus-within:relative">
+            </div>
+          </div>
+        </div>
+      </div>      
+      <div id="editor">
+      
+       <Fragment set:html= {renderPostHTML}/> 
+        
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+
+
+</script>
