@@ -1,6 +1,32 @@
-<script>
-    
+---
+import Database from "better-sqlite3";
 
+const post_id = Astro.url.searchParams.get("post_id");
+
+
+
+const updateOrCreatePost = (post_id:string,content:string) => {
+  const db = new Database('src/data/blog.db');
+
+  if(post_id){
+    const queryCheckPost = `SELECT post_id FROM posts WHERE post_id = ? `
+    const postExists = db.prepare(queryCheckPost).get(post_id);
+      if(postExists){
+      /*const queryUpdatePost = `UPDATE posts SET content=? WHERE id=?`;
+      const data = db.prepare(queryUpdatePost).run(content,post_id);*/
+    }
+  } else {
+    const queryCreatePost = `INSERT INTO posts FROM posts WHERE post_id = ? `
+    const createPost = db.prepare(`INSERT INTO posts (id,content_id,title,main_category,tags,abstract,content,published_at,updated_at) 
+    VALUES (?,?,?,?,?,?,?,?,?)`);
+  }
+  
+
+  db.close();
+  
+}
+---
+<script>
     document.addEventListener('DOMContentLoaded', function() {
       // Initialize date picker
       flatpickr("#post-date", {
@@ -16,14 +42,14 @@
       const multiSelectItems = document.querySelectorAll('.multi-select-item');
       
       // Toggle options visibility
-      multiSelectInput.addEventListener('click', function() {
-        multiSelectOptions.classList.toggle('hidden');
+      multiSelectInput?.addEventListener('click', function() {
+        multiSelectOptions?.classList.toggle('hidden');
       });
       
       // Close dropdown when clicking outside
       document.addEventListener('click', function(e) {
-        if (!multiSelectContainer.contains(e.target)) {
-          multiSelectOptions.classList.add('hidden');
+        if (!multiSelectContainer?.contains(e.target)) {
+          multiSelectOptions?.classList.add('hidden');
         }
       });
       
@@ -47,10 +73,10 @@
             tag.dataset.value = value;
             tag.innerHTML = `${text} <button type="button" class="ml-1 text-blue-500 hover:text-blue-800">×</button>`;
             
-            tag.querySelector('button').addEventListener('click', function(e) {
+            tag.querySelector('button')?.addEventListener('click', function(e) {
               e.stopPropagation();
               tag.remove();
-              document.querySelector(`.multi-select-item[data-value="${value}"]`).classList.remove('bg-blue-100');
+              document.querySelector(`.multi-select-item[data-value="${value}"]`)?.classList.remove('bg-blue-100');
             });
             
             selectedTags.appendChild(tag);

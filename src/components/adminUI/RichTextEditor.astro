@@ -24,82 +24,6 @@ if(data){
 
 
 
-    document.addEventListener('DOMContentLoaded', function() {
-      // Initialize date picker
-      flatpickr("#post-date", {
-        minDate: "today",
-        dateFormat: "Y-m-d",
-      });
-
-      // Initialize multi-select functionality
-      const multiSelectContainer = document.getElementById('multi-select-container');
-      const multiSelectInput = document.getElementById('multi-select-input');
-      const multiSelectOptions = document.getElementById('multi-select-options');
-      const selectedTags = document.getElementById('selected-tags');
-      const multiSelectItems = document.querySelectorAll('.multi-select-item');
-      
-      // Toggle options visibility
-      multiSelectInput.addEventListener('click', function() {
-        multiSelectOptions.classList.toggle('hidden');
-      });
-      
-      // Close dropdown when clicking outside
-      document.addEventListener('click', function(e) {
-        if (!multiSelectContainer.contains(e.target)) {
-          multiSelectOptions.classList.add('hidden');
-        }
-      });
-      
-      // Handle selection of items
-      multiSelectItems.forEach(item => {
-        item.addEventListener('click', function() {
-          const value = this.dataset.value;
-          const text = this.textContent;
-          const isSelected = this.classList.contains('bg-blue-100');
-          
-          if (isSelected) {
-            // Remove selection
-            this.classList.remove('bg-blue-100');
-            const tagToRemove = document.querySelector(`.selected-tag[data-value="${value}"]`);
-            if (tagToRemove) tagToRemove.remove();
-          } else {
-            // Add selection
-            this.classList.add('bg-blue-100');
-            const tag = document.createElement('span');
-            tag.classList.add('selected-tag', 'inline-flex', 'items-center', 'bg-blue-100', 'text-blue-800', 'text-sm', 'rounded', 'px-2', 'py-1', 'm-1');
-            tag.dataset.value = value;
-            tag.innerHTML = `${text} <button type="button" class="ml-1 text-blue-500 hover:text-blue-800">×</button>`;
-            
-            tag.querySelector('button').addEventListener('click', function(e) {
-              e.stopPropagation();
-              tag.remove();
-              document.querySelector(`.multi-select-item[data-value="${value}"]`).classList.remove('bg-blue-100');
-            });
-            
-            selectedTags.appendChild(tag);
-          }
-        });
-      });
-      
-      // Handle save button
-      document.getElementById('save-button')?.addEventListener('click', function() {
-        const title = document.getElementById('post-title')?.value;
-        const date = document.getElementById('post-date').value;
-        const category = document.getElementById('post-category').value;
-        const tags = Array.from(document.querySelectorAll('.selected-tag')).map(tag => tag.dataset.value);
-        
-        const postData = {
-          title,
-          date,
-          category,
-          tags
-        };
-        
-        console.log('Post data to save:', postData);
-        alert('Post saved successfully!');
-      });
-    });
-
     import Quill from "quill";
   const toolbarOptions = [
     [{ header: [1, 2, 3, false] }],
@@ -116,7 +40,7 @@ if(data){
     theme: "snow",
   });
 
-  setInterval(()=>console.log(quill.getSemanticHTML(0, 50000)),5000)
+  setInterval(()=>console.log(quill.getSemanticHTML(0, 50000),5000))
   </script>
   <style>
       #posteditor {
@@ -147,66 +71,6 @@ if(data){
       </div>
       
       <!-- Sidebar (20%) -->
-      <div class="w-full md:w-1/5">
-        <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
-          <button 
-            id="save-button" 
-            type="button" 
-            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition duration-150"
-          >
-            Save
-          </button>
-        </div>
-        
-        <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-2" for="post-date">Publication Date</label>
-          <input 
-            id="post-date" 
-            type="text" 
-            placeholder="Select a date..." 
-            class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" 
-          />
-        </div>
-        
-        <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-2" for="post-category">Category</label>
-          <select 
-            id="post-category" 
-            class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-          >
-            <option value="" disabled selected>Select a category</option>
-            <option value="news">News</option>
-            <option value="tutorial">Tutorial</option>
-            <option value="review">Review</option>
-            <option value="opinion">Opinion</option>
-          </select>
-        </div>
-        
-        <div class="bg-white rounded-lg shadow-sm p-4">
-          <label class="block text-sm font-medium text-gray-700 mb-2">Tags</label>
-          <div id="multi-select-container" class="relative">
-            <div 
-              id="multi-select-input"
-              class="w-full p-2 border border-gray-300 rounded-md cursor-pointer flex items-center justify-between"
-            >
-              <span class="text-gray-500">Select tags...</span>
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-              </svg>
-            </div>
-            <div id="selected-tags" class="flex flex-wrap mt-2"></div>
-            <div 
-              id="multi-select-options" 
-              class="absolute z-10 w-full mt-1 bg-white rounded-md shadow-lg overflow-auto max-h-60 hidden border border-gray-300"
-            >
-              <div class="multi-select-item p-2 hover:bg-gray-100 cursor-pointer" data-value="technology">Technology</div>
-              <div class="multi-select-item p-2 hover:bg-gray-100 cursor-pointer" data-value="design">Design</div>
-              <div class="multi-select-item p-2 hover:bg-gray-100 cursor-pointer" data-value="marketing">Marketing</div>
-              <div class="multi-select-item p-2 hover:bg-gray-100 cursor-pointer" data-value="business">Business</div>
-              <div class="multi-select-item p-2 hover:bg-gray-100 cursor-pointer" data-value="development">Development</div>
-            </div>
-          </div>
-        </div>
-      </div>
+      
     </div>
   </div>
