@@ -1,6 +1,11 @@
 ---
 import LoginForm from "../components/adminUI/LoginForm.astro";
 import AdminLayout from "../layouts/AdminLayout.astro";
+import { getSession } from 'auth-astro/server';
+
+const session = await getSession(Astro.request);
+
+console.log({session})
 ---
 
 <AdminLayout>

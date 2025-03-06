@@ -4,6 +4,8 @@ import { defineConfig } from "astro/config";
 import node from "@astrojs/node";
 import sitemap from "@astrojs/sitemap";
 import Database from "better-sqlite3";
+import auth from 'auth-astro';
+ 
 
 //import auth from "auth-astro";
 
@@ -48,7 +50,7 @@ const sqliteIntegration = () => ({
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [sitemap(), sqliteIntegration()],
+  integrations: [sitemap(), sqliteIntegration(),auth()],
   output: "server",
   vite: {
     plugins: [tailwindcss()],
