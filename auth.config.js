@@ -18,7 +18,7 @@ export default defineConfig({
 
             const res =  db.prepare('SELECT * FROM users WHERE email = ?').get(email);
 
-            db.close;
+            db.close();
             if(!res){
               throw new Error('Autenticación invalida :(')
             }

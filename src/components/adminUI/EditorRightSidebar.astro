@@ -1,28 +1,5 @@
----
-import Database from "better-sqlite3";
-
-const post_id = Astro.url.searchParams.get("post_id");
-
-const db = new Database('src/data/blog.db');
-const query = `SELECT * FROM posts WHERE id = ?`;
-const data = db.prepare(query).get(post_id);
-
-db.close();
-
-let renderPostHTML:string;
-let renderPostTitle: string;
- 
-if(data){
-  renderPostTitle = data.title;
-  renderPostHTML = data.content;
-} else {
-  renderPostTitle="";
-  renderPostHTML = "<h2> Escribe tu post </h2>";
-}
----
-  <script>
-
-
+<script>
+    
 
     document.addEventListener('DOMContentLoaded', function() {
       // Initialize date picker
@@ -99,55 +76,8 @@ if(data){
         alert('Post saved successfully!');
       });
     });
-
-    import Quill from "quill";
-  const toolbarOptions = [
-    [{ header: [1, 2, 3, false] }],
-    ["bold", "italic", "underline"],
-    [{ list: "ordered" }, { list: "bullet" }],
-    ["blockquote"],
-  [{ align: '' }, { align: 'center' }, { align: 'right' }],
-    ["link", "image"],
-  ];
-  const quill = new Quill("#posteditor", {
-    modules: {
-      toolbar: toolbarOptions,
-    },
-    theme: "snow",
-  });
-
-  setInterval(()=>console.log(quill.getSemanticHTML(0, 50000)),5000)
-  </script>
-  <style>
-      #posteditor {
-    border: 0 transparent;
-  }
-  #posteditor {
-    font-family: var(--font-sans);
-    font-size:var(--text-2xl)
-  }
-  </style>
-  <div class="container mx-auto p-6">
-    <div class="flex flex-col md:flex-row gap-6">
-      <!-- Main content area (80%) -->
-      <div class="w-full md:w-4/5 bg-white rounded-lg shadow-sm p-6">
-        <input 
-          id="post-title" 
-          type="text" 
-          placeholder="Enter post title..." 
-          value={renderPostTitle}
-          class="w-full text-3xl font-bold border-0 border-b border-gray-200 pb-2 mb-6 focus:outline-none focus:border-blue-500 focus:ring-0" 
-        />
-        <div>
-          <div class="border-hidden min-h-96 p-4 text-gray-800" id="posteditor">
-        <Fragment set:html= {renderPostHTML}/> 
-
-          </div>
-        </div>
-      </div>
-      
-      <!-- Sidebar (20%) -->
-      <div class="w-full md:w-1/5">
+</script>
+<div class="w-full md:w-1/5">
         <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
           <button 
             id="save-button" 
@@ -208,5 +138,3 @@ if(data){
           </div>
         </div>
       </div>
-    </div>
-  </div>

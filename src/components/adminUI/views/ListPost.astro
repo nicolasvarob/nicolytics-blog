@@ -1,15 +1,12 @@
 ---
-const response = await fetch(
-  `${import.meta.env.PUBLIC_PB_HOST}/api/collections/posts/records`
-);
-const data = await response.json();
+      import Database from "better-sqlite3";
 
-data.items.sort((a:any, b:any) => {
-  const b_published_date = new Date(b.published_at).getTime()
-  const a_published_date = new Date(a.published_at).getTime()
-  return b_published_date - a_published_date;
-});
+        const db = new Database('src/data/blog.db');
+        const query = `SELECT * FROM posts ORDER BY published_at DESC`;
+        const data = db.prepare(query).all();
+        db.close();
 
+        
 
 ---
 
@@ -34,9 +31,11 @@ data.items.sort((a:any, b:any) => {
     </thead>
     <tbody class="divide-y divide-gray-200">
       {        
-        data.items.map((item: any) => {
+        data.map((item: any) => {
         const currentTimestamp = new Date().getTime();
         const itemTimestamp = new Date(item.published_at).getTime()
+        const itemIdURL = `/editor/create-post?post_id=${item.id}`
+
         const addStatusButtonColor = currentTimestamp > itemTimestamp ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800";
 
         let statusButtonCss = "px-2 py-1 text-xs font-medium rounded-full " + addStatusButtonColor;
@@ -45,13 +44,15 @@ data.items.sort((a:any, b:any) => {
               <td class="px-4 py-4 text-sm text-gray-900">
                 {new Date(item.published_at).toLocaleDateString()}
               </td>
-              <td class="px-4 py-4 text-sm text-gray-600">{item.title}</td>
+            
+              <td class="px-4 py-4 text-sm text-gray-600"><a href={itemIdURL}>{item.title}</a></td>
               <td class="px-4 py-4 text-sm">
                 <span class={statusButtonCss}>
                   {currentTimestamp > itemTimestamp ? "Published" : "Scheduled"}
                 </span>
               </td>
             </tr>
+            
           );
         })
       }
