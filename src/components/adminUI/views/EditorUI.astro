@@ -1,0 +1,29 @@
+---
+import EditorRightSidebar from "../EditorRightSidebar.astro";
+import RichTextEditor from "../RichTextEditor.astro";
+
+import Database from "better-sqlite3";
+
+const post_id = Astro.url.searchParams.get("post_id");
+
+const db = new Database("src/data/blog.db");
+const query = `SELECT * FROM posts WHERE id = ?`;
+const data = db.prepare(query).get(post_id);
+
+db.close();
+
+import { postCurrentState } from '../../../store/posts';
+postCurrentState.set(data);
+---
+
+<div class="container mx-auto p-6">
+  <div class="flex flex-col md:flex-row gap-6">
+    <!-- Content Cards -->
+    <div class="w-full md:w-4/5 bg-white rounded-lg shadow-sm p-6">
+      <RichTextEditor postData={data} />
+    </div>
+    <div class="w-full md:w-1/5">
+      <EditorRightSidebar postData={data} />
+    </div>
+  </div>
+</div>

@@ -1,7 +1,23 @@
 ---
 import Database from "better-sqlite3";
 
-const post_id = Astro.url.searchParams.get("post_id");
+const { postData } = Astro.props;
+
+const category_list = [
+  'Dataform',
+  'BigQuery',
+  'Google Analytics 4',
+  'Google Tag Manager'
+]
+
+let publish_date = "";
+let category = "";
+let tags = "";
+
+if(postData){
+  publish_date = new Date(postData.published_at).toISOString().split('T')[0];
+  category = postData.category;
+}
 
 
 
@@ -16,9 +32,7 @@ const updateOrCreatePost = (post_id:string,content:string) => {
       const data = db.prepare(queryUpdatePost).run(content,post_id);*/
     }
   } else {
-    const queryCreatePost = `INSERT INTO posts FROM posts WHERE post_id = ? `
-    const createPost = db.prepare(`INSERT INTO posts (id,content_id,title,main_category,tags,abstract,content,published_at,updated_at) 
-    VALUES (?,?,?,?,?,?,?,?,?)`);
+   
   }
   
 
@@ -27,18 +41,20 @@ const updateOrCreatePost = (post_id:string,content:string) => {
 }
 ---
 <script>
+  import flatpickr from 'flatpickr'
     document.addEventListener('DOMContentLoaded', function() {
       // Initialize date picker
+
       flatpickr("#post-date", {
         minDate: "today",
         dateFormat: "Y-m-d",
       });
 
       // Initialize multi-select functionality
-      const multiSelectContainer = document.getElementById('multi-select-container');
-      const multiSelectInput = document.getElementById('multi-select-input');
-      const multiSelectOptions = document.getElementById('multi-select-options');
-      const selectedTags = document.getElementById('selected-tags');
+      const multiSelectContainer = document.getElementById('multi-select-container')  as HTMLFormElement;
+      const multiSelectInput = document.getElementById('multi-select-input') as HTMLFormElement;
+      const multiSelectOptions = document.getElementById('multi-select-options') as HTMLFormElement;
+      const selectedTags = document.getElementById('selected-tags') as HTMLFormElement;
       const multiSelectItems = document.querySelectorAll('.multi-select-item');
       
       // Toggle options visibility
@@ -79,31 +95,21 @@ const updateOrCreatePost = (post_id:string,content:string) => {
               document.querySelector(`.multi-select-item[data-value="${value}"]`)?.classList.remove('bg-blue-100');
             });
             
-            selectedTags.appendChild(tag);
+            selectedTags?.appendChild(tag);
           }
         });
       });
       
       // Handle save button
       document.getElementById('save-button')?.addEventListener('click', function() {
-        const title = document.getElementById('post-title')?.value;
-        const date = document.getElementById('post-date').value;
-        const category = document.getElementById('post-category').value;
-        const tags = Array.from(document.querySelectorAll('.selected-tag')).map(tag => tag.dataset.value);
+
         
-        const postData = {
-          title,
-          date,
-          category,
-          tags
-        };
+  
         
-        console.log('Post data to save:', postData);
         alert('Post saved successfully!');
       });
     });
 </script>
-<div class="w-full md:w-1/5">
         <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
           <button 
             id="save-button" 
@@ -119,6 +125,7 @@ const updateOrCreatePost = (post_id:string,content:string) => {
           <input 
             id="post-date" 
             type="text" 
+            value={publish_date}
             placeholder="Select a date..." 
             class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" 
           />
@@ -130,11 +137,10 @@ const updateOrCreatePost = (post_id:string,content:string) => {
             id="post-category" 
             class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
           >
-            <option value="" disabled selected>Select a category</option>
-            <option value="news">News</option>
-            <option value="tutorial">Tutorial</option>
-            <option value="review">Review</option>
-            <option value="opinion">Opinion</option>
+            <option value={category} disabled selected>{category ?? "Select a category"}</option>
+            {category_list.map(i=>(
+            <option value={i}>{i}</option>
+            ))}
           </select>
         </div>
         
@@ -163,4 +169,3 @@ const updateOrCreatePost = (post_id:string,content:string) => {
             </div>
           </div>
         </div>
-      </div>

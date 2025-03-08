@@ -16,6 +16,7 @@ export default defineConfig({
             const db = new Database("src/data/blog.db");
 
 
+
             const res =  db.prepare('SELECT * FROM users WHERE email = ?').get(email);
 
             db.close();

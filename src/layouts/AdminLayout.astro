@@ -96,23 +96,4 @@ rel="stylesheet"
       });
     </script>
   </body>
-  <script>
-    import PocketBase from "pocketbase";
-
-    // Additional JavaScript to handle form submission
-    const pb = new PocketBase(import.meta.env.PUBLIC_PB_HOST);
-
-    let currentLocation = (window as any).location;
-    let currentPathname = currentLocation.pathname;
-    const authenticatedUser = pb.authStore.isValid;
-
-    console.log("Authstore is valid ?", authenticatedUser);
-    if (!authenticatedUser && currentPathname != "/login") {
-      console.log("Not logged in");
-      currentLocation.replace(window.location.origin + "/login");
-    } else if (authenticatedUser && currentPathname == "/login") {
-      console.log("Logged in");
-      currentLocation.replace(window.location.origin + "/editor/create-post");
-    }
-  </script>
 </html>
