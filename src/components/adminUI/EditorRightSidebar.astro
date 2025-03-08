@@ -1,7 +1,9 @@
 ---
 import Database from "better-sqlite3";
 
-const { postData } = Astro.props;
+
+import { postCurrentState } from '../../store/posts';
+
 
 const category_list = [
   'Dataform',
@@ -14,9 +16,12 @@ let publish_date = "";
 let category = "";
 let tags = "";
 
+const postData = postCurrentState.get()
+
+
 if(postData){
   publish_date = new Date(postData.published_at).toISOString().split('T')[0];
-  category = postData.category;
+  category = postData.main_category;
 }
 
 
@@ -41,7 +46,11 @@ const updateOrCreatePost = (post_id:string,content:string) => {
 }
 ---
 <script>
+  import { actions } from 'astro:actions';
   import flatpickr from 'flatpickr'
+  import { postCurrentState } from '../../store/posts';
+
+
     document.addEventListener('DOMContentLoaded', function() {
       // Initialize date picker
 
@@ -102,11 +111,12 @@ const updateOrCreatePost = (post_id:string,content:string) => {
       
       // Handle save button
       document.getElementById('save-button')?.addEventListener('click', function() {
-
-        
-  
-        
-        alert('Post saved successfully!');
+        async () => {
+          
+        //const { data, error } = await actions.createPost();
+} 
+        //TODO: Hacer que esto funcione, el estado no se esta compartiendo entre server / front
+        alert(JSON.stringify(postCurrentState.get()));
       });
     });
 </script>
