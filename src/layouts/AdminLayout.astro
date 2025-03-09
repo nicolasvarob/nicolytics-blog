@@ -63,8 +63,7 @@ rel="stylesheet"
         });
 
       document
-        .getElementById("close-sidebar")!
-        .addEventListener("click", function () {
+        .getElementById("close-sidebar")?.addEventListener("click", function () {
           document
             .getElementById("sidebar")!
             .classList.add("-translate-x-full");
@@ -89,9 +88,7 @@ rel="stylesheet"
       // Ensure sidebar is visible when screen size changes to desktop
       window.addEventListener("resize", function () {
         if (window.innerWidth >= 1024) {
-          document
-            .getElementById("sidebar")!
-            .classList.remove("-translate-x-full");
+          document.getElementById("sidebar")?.classList.remove("-translate-x-full");
         }
       });
     </script>

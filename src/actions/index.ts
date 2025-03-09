@@ -1,13 +1,11 @@
 import { loginUser, logout, registerUser } from './auth';
-import { createPost } from './posts';
+import { savePost } from './posts';
 
 
 export const server = {
-  // actions
-
-  // Auth
+  savePost,
+ // Auth
   loginUser,
   logout,
-  registerUser,
-  createPost
+  registerUser
 };

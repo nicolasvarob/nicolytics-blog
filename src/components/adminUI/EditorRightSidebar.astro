@@ -1,181 +1,230 @@
 ---
-import Database from "better-sqlite3";
 
-
-import { postCurrentState } from '../../store/posts';
-
+import { postCurrentState } from "../../store/posts";
+import { actions } from 'astro:actions';
 
 const category_list = [
-  'Dataform',
-  'BigQuery',
-  'Google Analytics 4',
-  'Google Tag Manager'
-]
+  "Dataform",
+  "BigQuery",
+  "Google Analytics 4",
+  "Google Tag Manager",
+];
 
 let publish_date = "";
 let category = "";
 let tags = "";
 
-const postData = postCurrentState.get()
+const postData = postCurrentState.get();
 
-
-if(postData){
-  publish_date = new Date(postData.published_at).toISOString().split('T')[0];
+if (postData) {
+  //publish_date = new Date(postData.published_at).toISOString().split('T')[0];
   category = postData.main_category;
 }
 
+/*const  updateOrCreatePost = async (post_id: string, content: string) => {
+  const db = new Database("src/data/blog.db");
 
-
-const updateOrCreatePost = (post_id:string,content:string) => {
-  const db = new Database('src/data/blog.db');
-
-  if(post_id){
-    const queryCheckPost = `SELECT post_id FROM posts WHERE post_id = ? `
+  if (post_id) {
+    const queryCheckPost = `SELECT post_id FROM posts WHERE post_id = ? `;
     const postExists = db.prepare(queryCheckPost).get(post_id);
-      if(postExists){
-      /*const queryUpdatePost = `UPDATE posts SET content=? WHERE id=?`;
-      const data = db.prepare(queryUpdatePost).run(content,post_id);*/
+    if (postExists) {
+
     }
   } else {
-   
   }
-  
+  db.close()
+  };
+  */
 
-  db.close();
-  
-}
+  //const result = Astro.getActionResult();
+
 ---
-<script>
-  import { actions } from 'astro:actions';
-  import flatpickr from 'flatpickr'
-  import { postCurrentState } from '../../store/posts';
 
+<script >
+  import flatpickr from "flatpickr";
 
-    document.addEventListener('DOMContentLoaded', function() {
-      // Initialize date picker
+  document.addEventListener("DOMContentLoaded", function () {
+    // Initialize date picker
 
-      flatpickr("#post-date", {
-        minDate: "today",
-        dateFormat: "Y-m-d",
-      });
+    flatpickr("#post-date", {
+      minDate: "today",
+      dateFormat: "Y-m-d",
+    });
 
-      // Initialize multi-select functionality
-      const multiSelectContainer = document.getElementById('multi-select-container')  as HTMLFormElement;
-      const multiSelectInput = document.getElementById('multi-select-input') as HTMLFormElement;
-      const multiSelectOptions = document.getElementById('multi-select-options') as HTMLFormElement;
-      const selectedTags = document.getElementById('selected-tags') as HTMLFormElement;
-      const multiSelectItems = document.querySelectorAll('.multi-select-item');
-      
-      // Toggle options visibility
-      multiSelectInput?.addEventListener('click', function() {
-        multiSelectOptions?.classList.toggle('hidden');
-      });
-      
-      // Close dropdown when clicking outside
-      document.addEventListener('click', function(e) {
-        if (!multiSelectContainer?.contains(e.target)) {
-          multiSelectOptions?.classList.add('hidden');
+    // Initialize multi-select functionality
+    const multiSelectContainer = document.getElementById( "multi-select-container" );
+    const multiSelectInput = document.getElementById( "multi-select-input" );
+    const multiSelectOptions = document.getElementById( "multi-select-options" );
+    const selectedTags = document.getElementById( "selected-tags" );
+    const multiSelectItems = document.querySelectorAll(".multi-select-item");
+
+    // Toggle options visibility
+    multiSelectInput?.addEventListener("click", function () {
+      multiSelectOptions?.classList.toggle("hidden");
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener("click", function (e) {
+      if (!multiSelectContainer?.contains(e.target)) {
+        multiSelectOptions?.classList.add("hidden");
+      }
+    });
+
+    // Handle selection of items
+    multiSelectItems.forEach((item) => {
+      item.addEventListener("click", function () {
+        const value = this.dataset.value;
+        const text = this.textContent;
+        const isSelected = this.classList.contains("bg-blue-100");
+
+        if (isSelected) {
+          // Remove selection
+          this.classList.remove("bg-blue-100");
+          const tagToRemove = document.querySelector(
+            `.selected-tag[data-value="${value}"]`
+          );
+          if (tagToRemove) tagToRemove.remove();
+        } else {
+          // Add selection
+          this.classList.add("bg-blue-100");
+          const tag = document.createElement("span");
+          tag.classList.add(
+            "selected-tag",
+            "inline-flex",
+            "items-center",
+            "bg-blue-100",
+            "text-blue-800",
+            "text-sm",
+            "rounded",
+            "px-2",
+            "py-1",
+            "m-1"
+          );
+          tag.dataset.value = value;
+          tag.innerHTML = `${text} <button type="button" class="ml-1 text-blue-500 hover:text-blue-800">×</button>`;
+
+          tag.querySelector("button")?.addEventListener("click", function (e) {
+            e.stopPropagation();
+            tag.remove();
+            document
+              .querySelector(`.multi-select-item[data-value="${value}"]`)
+              ?.classList.remove("bg-blue-100");
+          });
+
+          selectedTags?.appendChild(tag);
         }
       });
-      
-      // Handle selection of items
-      multiSelectItems.forEach(item => {
-        item.addEventListener('click', function() {
-          const value = this.dataset.value;
-          const text = this.textContent;
-          const isSelected = this.classList.contains('bg-blue-100');
-          
-          if (isSelected) {
-            // Remove selection
-            this.classList.remove('bg-blue-100');
-            const tagToRemove = document.querySelector(`.selected-tag[data-value="${value}"]`);
-            if (tagToRemove) tagToRemove.remove();
-          } else {
-            // Add selection
-            this.classList.add('bg-blue-100');
-            const tag = document.createElement('span');
-            tag.classList.add('selected-tag', 'inline-flex', 'items-center', 'bg-blue-100', 'text-blue-800', 'text-sm', 'rounded', 'px-2', 'py-1', 'm-1');
-            tag.dataset.value = value;
-            tag.innerHTML = `${text} <button type="button" class="ml-1 text-blue-500 hover:text-blue-800">×</button>`;
-            
-            tag.querySelector('button')?.addEventListener('click', function(e) {
-              e.stopPropagation();
-              tag.remove();
-              document.querySelector(`.multi-select-item[data-value="${value}"]`)?.classList.remove('bg-blue-100');
-            });
-            
-            selectedTags?.appendChild(tag);
-          }
-        });
-      });
-      
-      // Handle save button
-      document.getElementById('save-button')?.addEventListener('click', function() {
-        async () => {
-          
-        //const { data, error } = await actions.createPost();
-} 
-        //TODO: Hacer que esto funcione, el estado no se esta compartiendo entre server / front
-        alert(JSON.stringify(postCurrentState.get()));
-      });
     });
+
+  });
 </script>
-        <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
-          <button 
-            id="save-button" 
-            type="button" 
-            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition duration-150"
-          >
-            Save
-          </button>
-        </div>
-        
-        <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-2" for="post-date">Publication Date</label>
-          <input 
-            id="post-date" 
-            type="text" 
-            value={publish_date}
-            placeholder="Select a date..." 
-            class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" 
-          />
-        </div>
-        
-        <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-2" for="post-category">Category</label>
-          <select 
-            id="post-category" 
-            class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-          >
-            <option value={category} disabled selected>{category ?? "Select a category"}</option>
-            {category_list.map(i=>(
-            <option value={i}>{i}</option>
-            ))}
-          </select>
-        </div>
-        
-        <div class="bg-white rounded-lg shadow-sm p-4">
-          <label class="block text-sm font-medium text-gray-700 mb-2">Tags</label>
-          <div id="multi-select-container" class="relative">
-            <div 
-              id="multi-select-input"
-              class="w-full p-2 border border-gray-300 rounded-md cursor-pointer flex items-center justify-between"
-            >
-              <span class="text-gray-500">Select tags...</span>
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-              </svg>
-            </div>
-            <div id="selected-tags" class="flex flex-wrap mt-2"></div>
-            <div 
-              id="multi-select-options" 
-              class="absolute z-10 w-full mt-1 bg-white rounded-md shadow-lg overflow-auto max-h-60 hidden border border-gray-300"
-            >
-              <div class="multi-select-item p-2 hover:bg-gray-100 cursor-pointer" data-value="technology">Technology</div>
-              <div class="multi-select-item p-2 hover:bg-gray-100 cursor-pointer" data-value="design">Design</div>
-              <div class="multi-select-item p-2 hover:bg-gray-100 cursor-pointer" data-value="marketing">Marketing</div>
-              <div class="multi-select-item p-2 hover:bg-gray-100 cursor-pointer" data-value="business">Business</div>
-              <div class="multi-select-item p-2 hover:bg-gray-100 cursor-pointer" data-value="development">Development</div>
-            </div>
-          </div>
-        </div>
+<script >
+  /*document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("save-button").addEventListener("click", () => {
+      console.log("click");
+      console.log(updateOrCreatePost)
+      updateOrCreatePost();
+    });});*/
+</script>
+
+<div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+<form method="POST" action={}>
+
+  <button
+    type="submit"
+    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition duration-150"
+  >
+    Save
+  </button>
+</form>
+
+</div>
+
+
+<div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+  <label class="block text-sm font-medium text-gray-700 mb-2" for="post-date"
+    >Publication Date</label
+  >
+  <input
+    id="post-date"
+    type="text"
+    value={publish_date}
+    placeholder="Select a date..."
+    class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+  />
+</div>
+
+<div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+  <label
+    class="block text-sm font-medium text-gray-700 mb-2"
+    for="post-category">Category</label
+  >
+  <select
+    id="post-category"
+    class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+  >
+    <option value={category} disabled selected
+      >{category ?? "Select a category"}</option
+    >
+    {category_list.map((i) => <option value={i}>{i}</option>)}
+  </select>
+</div>
+
+<div class="bg-white rounded-lg shadow-sm p-4">
+  <label class="block text-sm font-medium text-gray-700 mb-2">Tags</label>
+  <div id="multi-select-container" class="relative">
+    <div
+      id="multi-select-input"
+      class="w-full p-2 border border-gray-300 rounded-md cursor-pointer flex items-center justify-between"
+    >
+      <span class="text-gray-500">Select tags...</span>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5 text-gray-400"
+        viewBox="0 0 20 20"
+        fill="currentColor"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+          clip-rule="evenodd"></path>
+      </svg>
+    </div>
+    <div id="selected-tags" class="flex flex-wrap mt-2"></div>
+    <div
+      id="multi-select-options"
+      class="absolute z-10 w-full mt-1 bg-white rounded-md shadow-lg overflow-auto max-h-60 hidden border border-gray-300"
+    >
+      <div
+        class="multi-select-item p-2 hover:bg-gray-100 cursor-pointer"
+        data-value="technology"
+      >
+        Technology
+      </div>
+      <div
+        class="multi-select-item p-2 hover:bg-gray-100 cursor-pointer"
+        data-value="design"
+      >
+        Design
+      </div>
+      <div
+        class="multi-select-item p-2 hover:bg-gray-100 cursor-pointer"
+        data-value="marketing"
+      >
+        Marketing
+      </div>
+      <div
+        class="multi-select-item p-2 hover:bg-gray-100 cursor-pointer"
+        data-value="business"
+      >
+        Business
+      </div>
+      <div
+        class="multi-select-item p-2 hover:bg-gray-100 cursor-pointer"
+        data-value="development"
+      >
+        Development
+      </div>
+    </div>
+  </div>
+</div>

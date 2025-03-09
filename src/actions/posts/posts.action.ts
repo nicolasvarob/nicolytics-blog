@@ -15,20 +15,44 @@ import Database from "better-sqlite3";
   published_at DATETIME,
   updated_at DATETIME
 )*/
-export const createPost = defineAction({
-  input: z.object({
-    content_id: z.string(),
-    title: z.string().min(6),
-    main_category:z.string().min(3),
-    tags:z.string(),
-    abstract: z.string(),
-    content: z.string(),
-    created_at:z.string(),
-    published_at:z.string(),
-    updated_at:z.string(),
-  }),
-  handler: async ({ content_id, title, main_category, tags, abstract, content,created_at, published_at, updated_at }) => {
+const zDefinePost = z.object({
+  post_id: z.string(),
+  content_id: z.string(),
+  title: z.string().min(6),
+  main_category:z.string().min(3),
+  tags:z.string(),
+  abstract: z.string(),
+  content: z.string(),
+  created_at:z.string(),
+  published_at:z.string(),
+  updated_at:z.string(),
+})
+
+
+export const savePost = defineAction({
+  input: zDefinePost,
+  handler: async ({ post_id,content_id, title, main_category, tags, abstract, content,created_at, published_at, updated_at }) => {
     const db = new Database("../src/data/blog.db");
+
+    if(post_id){
+      const queryCheckPost = `SELECT post_id FROM posts WHERE post_id = ? `;
+      const postExists = db.prepare(queryCheckPost).get(post_id);
+      if(postExists){
+        const updatePost = db
+        .prepare(`UPDATE posts set(title,main_category,tags,abstract,content,published_at,updated_at) 
+            VALUES (?,?,?,?,?,?,?,?,?)`);
+          
+            updatePost.run(title,main_category,tags,abstract,content,published_at,updated_at);
+      } else {
+        const insertData = db
+    .prepare(`INSERT INTO posts (id,content_id,title,main_category,tags,abstract,content,created_at, published_at,updated_at) 
+        VALUES (?,?,?,?,?,?,?,?,?)`);
+    insertData.run(uuidv4(),content_id,title,main_category,tags,abstract,content,created_at,published_at,updated_at);
+      
+      }
+      db.close();
+
+    }
 
     console.log('create post action')
     
@@ -43,28 +67,11 @@ export const createPost = defineAction({
   },
 });
 
-export const updatePost = defineAction({
-  input: z.object({
-    title: z.string().min(6),
-    main_category:z.string().min(3),
-    tags:z.string(),
-    abstract: z.string(),
-    content: z.string(),
-    published_at:z.string(),
-    updated_at:z.string(),
-  }),
-  handler: async ({  title,main_category,tags,abstract,content,published_at,updated_at }) => {
-    const db = new Database("../src/data/blog.db");
+export const testAction = defineAction({
 
-    console.log('update post action')
-    
-    const insertData = db
-    .prepare(` posts (title,main_category,tags,abstract,content,published_at,updated_at) 
-        VALUES (?,?,?,?,?,?,?,?,?)`);
-      
-    insertData.run(title,main_category,tags,abstract,content,published_at,updated_at);
-    db.close();
-    
+  handler: async ({}) => {
+    console.log('test this action')
+
     return { ok: true };
   },
 });

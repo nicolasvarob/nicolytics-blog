@@ -7,7 +7,6 @@ let renderPostTitle: string;
 const{ postData } = Astro.props;
 
 import { postCurrentState } from '../../store/posts';
-console.log(postCurrentState.value)
 
 if(postData){
   renderPostTitle = postData.title;
